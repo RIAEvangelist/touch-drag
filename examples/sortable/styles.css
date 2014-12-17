@@ -48,7 +48,7 @@ li{
 }
 
 .all-filters, .used-filters{
-    background:pink;
+    background: rgb(170,130,130);
 }
 
 .droppable-type2{

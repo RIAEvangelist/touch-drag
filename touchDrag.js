@@ -7,11 +7,12 @@
  * 
  */
 
-function touchDrag(dropTargetClasses, dragTargetClasses, draggingClass, dropClass, noGhost, ghostClass, ghostContent){
+function touchDrag(dropTargetClasses, dragTargetClasses, draggingClass, dropClass, noAutoDrop, noGhost, ghostClass, ghostContent){
     if(typeof dropTargetClasses=='object'){
         dragTargetClasses   = dropTargetClasses.dragTargetClasses;
         draggingClass       = dropTargetClasses.draggingClass;
         dropClass           = dropTargetClasses.dropClass;
+        noAutoDrop          = dropTargetClasses.noAutoDrop;
         noGhost             = dropTargetClasses.noGhost;
         ghostClass          = dropTargetClasses.ghostClasses;
         ghostContent        = dropTargetClasses.ghostContent;
@@ -32,12 +33,6 @@ function touchDrag(dropTargetClasses, dragTargetClasses, draggingClass, dropClas
     
     var dragTarget=false;
     var ghost=false;
-    
-    if(typeof noGhost=='string'){
-        ghostContent=ghostClasses;
-        ghostClasses=noGhost;
-        noGhost=false;
-    }
     
     if(!noGhost)
         buildGhost(ghostClass,ghostContent);
@@ -199,17 +194,23 @@ function touchDrag(dropTargetClasses, dragTargetClasses, draggingClass, dropClas
         }
         
         var target=ghost;
+        if(target)
+            target.style.display='block';
+        
         if(!target)
             target=dragTarget;
         
-        target.style.display='block';
-        target.style.top=location.y-dragTarget.offsetHeight/2+'px';
+        target.style.top=location.y-dragTarget.clientHeight/2+'px';
         target.style.left=location.x+1+'px';
-
+        
+        if(noAutoDrop)
+            return;
+        
         var element=document.elementFromPoint(location.x,location.y);
-
+        
         if(element.classList.contains('touchDrag-draggable')){
             moveElement(element,true);
+            
             return;
         }
         

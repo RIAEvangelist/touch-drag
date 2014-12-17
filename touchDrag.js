@@ -6,69 +6,103 @@
  * comma deliminated list of classes to add onto this particular ghost element
  * 
  */
-function touchDrag(dropTargetClasses, dragTargetClasses, ghostClasses, ghostContent){
-    if(typeof dropTargetClasses != 'string')
-        return;
+
+function touchDrag(dropTargetClasses, dragTargetClasses, draggingClass, dropClass, noGhost, ghostClass, ghostContent){
+    if(typeof dropTargetClasses=='object'){
+        dragTargetClasses   = dropTargetClasses.dragTargetClasses;
+        draggingClass       = dropTargetClasses.draggingClass;
+        dropClass           = dropTargetClasses.dropClass;
+        noGhost             = dropTargetClasses.noGhost;
+        ghostClass          = dropTargetClasses.ghostClasses;
+        ghostContent        = dropTargetClasses.ghostContent;
+        dropTargetClasses   = dropTargetClasses.dropTargetClasses;
+    }
+    
+    if(!dragTargetClasses)
+        dragTargetClasses='li';
+    
+    if(!draggingClass)
+        draggingClass='touchDrag-dragging';
+    
+    if(!dropClass)
+        dropClass='touchDrag-dropped';
+    
+    if(!ghostClass)
+        ghostClass='touchDrag-ghost';
     
     var dragTarget=false;
-    var ghost=document.createElement('div');
-    ghost.style.position='absolute';
-    ghost.style.zIndex=1e4;
-    ghost.style.backgroundColor='rgba(100,100,100,.7)';
-    ghost.style.display='none';
+    var ghost=false;
     
-    if(ghostClasses){
-        ghost.classList.add(
-            ghostClasses.replace(/\s/g,'')
-        );
+    if(typeof noGhost=='string'){
+        ghostContent=ghostClasses;
+        ghostClasses=noGhost;
+        noGhost=false;
     }
     
-    if(ghostContent){
-       ghost.innerHTML=ghostContent;
-    }
+    if(!noGhost)
+        buildGhost(ghostClass,ghostContent);
     
-    document.getElementsByTagName('body')[0].appendChild(ghost);
+    var dropTargets=document.querySelectorAll(dropTargetClasses);
     
-    var lists=document.querySelectorAll(dropTargetClasses);
-    
-    for(var i=0; i<lists.length; i++){
-        lists[i].addEventListener(
+    for(var i=0; i<dropTargets.length; i++){
+        dropTargets[i].addEventListener(
             'mousedown',
             startDrag
         );
 
-        lists[i].addEventListener(
+        dropTargets[i].addEventListener(
             'touchstart',
             startDrag
         );
-        var items=lists[i].querySelectorAll(dragTargetClasses);
+        var items=dropTargets[i].querySelectorAll(dragTargetClasses);
         for(var j=0; j<items.length; j++){
-            items[j].classList.add('draggable');
+            items[j].classList.add('touchDrag-draggable');
         }
     }
     
-    document.getElementsByTagName('body')[0].appendChild(ghost);
     
-    function startDrag(e){
-        console.log(e)
+    function buildGhost(ghostClasses,ghostContent){
+        ghost=document.createElement('div');
+        ghost.style.position='absolute';
+        ghost.style.zIndex=1e4;
+        ghost.style.backgroundColor='rgba(100,100,100,.7)';
+        ghost.style.display='none';
 
-        if(!e.target.classList.contains('draggable')){
-            return;
+        if(ghostClass){
+            ghost.classList.add(
+                ghostClass
+            );
         }
 
+        if(ghostContent){
+           ghost.innerHTML=ghostContent;
+        }
+
+        document.getElementsByTagName('body')[0].appendChild(ghost);
+    }
+    
+    function startDrag(e){
+        if(!e.target.classList.contains('touchDrag-draggable')){
+            return;
+        }
+        
         var element=e.target;
 
-        while(!element.classList.contains('draggable'))
+        while(!element.classList.contains('touchDrag-draggable'))
             element=element.parentElement;
         
-        if(!element.classList.contains('draggable'))
+        if(!element.classList.contains('touchDrag-draggable'))
             return;
 
+        element.classList.add(draggingClass);
+        
         dragTarget=element;
-
-        ghost.style.width=element.offsetWidth+'px';
-        ghost.style.height=element.offsetHeight+'px';
-
+        
+        if(ghost){
+            ghost.style.width=element.offsetWidth+'px';
+            ghost.style.height=element.offsetHeight+'px';
+        }
+        
         positionGhost(e);
         
         document.addEventListener(
@@ -96,26 +130,23 @@ function touchDrag(dropTargetClasses, dragTargetClasses, ghostClasses, ghostCont
         if(!dragTarget || element==dragTarget)
             return;
         
-        console.log(0>Array.prototype.indexOf.call(lists,element))
-        
         if(!insertBefore){  
-            if(0>Array.prototype.indexOf.call(lists,element))
+            if(0>Array.prototype.indexOf.call(dropTargets,element))
                 return;
-            
+            showDropClass();
             element.appendChild(dragTarget);
             return;
         }
 
         var parent=element;
         
-        console.log(parent);
-        while(0>Array.prototype.indexOf.call(lists,parent))
+        while(0>Array.prototype.indexOf.call(dropTargets,parent))
             parent=parent.parentElement;
         
-        console.log(parent);
-        if(0>Array.prototype.indexOf.call(lists,parent))
+        if(0>Array.prototype.indexOf.call(dropTargets,parent))
             return;
-
+        
+        showDropClass();
         parent.insertBefore(dragTarget,element);
 
     }
@@ -127,7 +158,12 @@ function touchDrag(dropTargetClasses, dragTargetClasses, ghostClasses, ghostCont
 
     function drop(e){
         e.preventDefault();
-        ghost.style.display='none';
+        if(ghost)
+            ghost.style.display='none';
+        
+        dragTarget.classList.remove(draggingClass);
+        showDropClass();
+        
         dragTarget=false;
         document.removeEventListener(
             'mousemove',
@@ -161,21 +197,47 @@ function touchDrag(dropTargetClasses, dragTargetClasses, ghostClasses, ghostCont
             location.x=e.touches.item(0).clientX;
             location.y=e.touches.item(0).clientY;
         }
-
-        ghost.style.display='block';
-        ghost.style.top=location.y-dragTarget.offsetHeight/2+'px';
-        ghost.style.left=location.x+1+'px';
+        
+        var target=ghost;
+        if(!target)
+            target=dragTarget;
+        
+        target.style.display='block';
+        target.style.top=location.y-dragTarget.offsetHeight/2+'px';
+        target.style.left=location.x+1+'px';
 
         var element=document.elementFromPoint(location.x,location.y);
 
-        if(element.classList.contains('draggable')){
+        if(element.classList.contains('touchDrag-draggable')){
             moveElement(element,true);
             return;
         }
         
-        if(0>Array.prototype.indexOf.call(lists,element))
+        if(0>Array.prototype.indexOf.call(dropTargets,element))
             return;
 
         moveElement(element);
+    }
+    
+    function showDropClass(){
+        if(!dragTarget)
+            return;
+        
+        dragTarget.classList.add(dropClass);
+        dragTarget.dropTime=new Date().getTime(); 
+        
+        (
+            function(element){
+                setTimeout(
+                    function(){
+                        if(element.dropTime>new Date().getTime()-300)
+                            return;
+                        
+                        element.classList.remove(dropClass);
+                    },
+                    300
+                );
+            }
+        )(dragTarget);
     }
 }

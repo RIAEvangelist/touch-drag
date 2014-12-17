@@ -1,0 +1,26 @@
+/* 
+    Created on : Dec 17, 2014, 12:54:56 AM
+    Author     : bmiller
+*/
+
+.touchDrag-dragging{
+    box-shadow:0 0 5px 2px rgba(0,0,0,.9);
+    opacity:.7;
+    -webkit-transition:box-shadow 300ms;
+    -moz-transition:box-shadow 300ms;
+    -ms-transition:box-shadow 300ms;
+    transition:box-shadow 300ms;
+    
+    -webkit-transform:translate3d(0,0,0);
+    -moz-transform:translate3d(0,0,0);
+    -ms-transform:translate3d(0,0,0);
+    transform:translate3d(0,0,0);
+}
+
+.touchDrag-dropped{
+    box-shadow:0 0 6px rgba(255,255,204,.5);
+}
+
+.touchDrag-ghost{
+    box-shadow: 0 0 10px 3px rgba(0,0,0,.5);
+}

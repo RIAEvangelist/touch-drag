@@ -1,20 +1,38 @@
-/*
- * > dropTargetClasses :
- * comma deliminated list of classes for drop areas
+/**
+ * @fileOverview Sortable Module responsible for all sorting related 
+ * actions for both desktop and mobile
+ *  - drag and drop
+ *  - touch events enabled
+ *  
+ * @name        Logic
+ * @module      logic/sortable
+ */
+
+/**
+ * touch drag class
  * 
- * > dropTargetClasses :
- * comma deliminated list of classes to add onto this particular ghost element
+ * @memberOf module:logic/sortable
+ * @class touchDrag
  * 
+ * @param {string|object} dropTargetClasses comma deliminated list of classes for drop areas
+ * @param {string} dragTargetClasses comma deliminated list of classes to add onto this particular ghost element
+ * @param {type} draggingClass
+ * @param {type} dropClass
+ * @param {boolean} noAutoDrop
+ * @param {boolean} noGhost
+ * @param {sring} ghostClass
+ * @param {string} ghostContent
+ * @returns {void}
  */
 
 function touchDrag(dropTargetClasses, dragTargetClasses, draggingClass, dropClass, noAutoDrop, noGhost, ghostClass, ghostContent){
-    if(typeof dropTargetClasses=='object'){
+    if(typeof dropTargetClasses ==='object'){
         dragTargetClasses   = dropTargetClasses.dragTargetClasses;
         draggingClass       = dropTargetClasses.draggingClass;
         dropClass           = dropTargetClasses.dropClass;
         noAutoDrop          = dropTargetClasses.noAutoDrop;
         noGhost             = dropTargetClasses.noGhost;
-        ghostClass          = dropTargetClasses.ghostClasses;
+        ghostClass          = dropTargetClasses.ghostClass;
         ghostContent        = dropTargetClasses.ghostContent;
         dropTargetClasses   = dropTargetClasses.dropTargetClasses;
     }
@@ -55,8 +73,16 @@ function touchDrag(dropTargetClasses, dragTargetClasses, draggingClass, dropClas
         }
     }
     
-    
-    function buildGhost(ghostClasses,ghostContent){
+    /**
+     * @memberOf class: touchDrag
+     * 
+     * @function buildGhost
+     * 
+     * @param {string} ghostClass
+     * @param {string} ghostContent
+     * @returns {void}
+     */
+    function buildGhost(ghostClass,ghostContent){
         ghost=document.createElement('div');
         ghost.style.position='absolute';
         ghost.style.zIndex=1e4;
@@ -122,7 +148,7 @@ function touchDrag(dropTargetClasses, dragTargetClasses, draggingClass, dropClas
     }
 
     function moveElement(element,insertBefore){
-        if(!dragTarget || element==dragTarget)
+        if(!dragTarget || element === dragTarget)
             return;
         
         if(!insertBefore){  
@@ -186,7 +212,7 @@ function touchDrag(dropTargetClasses, dragTargetClasses, draggingClass, dropClas
         var location={
             x:e.clientX,
             y:e.clientY
-        }
+        };
 
         if(!location.x){
             location.x=e.touches.item(0).clientX;

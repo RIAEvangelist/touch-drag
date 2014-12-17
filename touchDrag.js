@@ -1,27 +1,3 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-
-document.addEventListener(
-    'DOMContentLoaded',
-    init
-);
-
-function init(){
-    sortable(
-        '.used-filters,.all-filters',
-        'li',
-        'dragGhost'
-    );
-    sortable(
-        '.droppable-type2',
-        'li'
-    );
-}
-
 /*
  * > dropTargetClasses :
  * comma deliminated list of classes for drop areas
@@ -30,7 +6,7 @@ function init(){
  * comma deliminated list of classes to add onto this particular ghost element
  * 
  */
-function sortable(dropTargetClasses, dragTargetClasses, ghostClasses, ghostContent){
+function touchDrag(dropTargetClasses, dragTargetClasses, ghostClasses, ghostContent){
     if(typeof dropTargetClasses != 'string')
         return;
     

@@ -4,24 +4,20 @@
  *  - drag and drop
  *  - touch events enabled
  *  
- * @name        Logic
- * @module      logic/sortable
  */
 
 /**
- * touch drag class
+ * @function touchDrag
  * 
- * @memberOf module:logic/sortable
- * @class touchDrag
- * 
- * @param {string|object} dropTargetClasses comma deliminated list of classes for drop areas
+ * @param {string|object} dropTargetClasses comma deliminated list of classes for drop areas. 
+ * if an object it can include any or all of the param names as key value pairs
  * @param {string} dragTargetClasses comma deliminated list of classes to add onto this particular ghost element
- * @param {type} draggingClass
- * @param {type} dropClass
- * @param {boolean} noAutoDrop
- * @param {boolean} noGhost
- * @param {sring} ghostClass
- * @param {string} ghostContent
+ * @param {type} draggingClass class to be dragged
+ * @param {type} dropClass class to be dropped
+ * @param {boolean} noAutoDrop boolean value true or flase if auto drop available
+ * @param {boolean} noGhost boolean value true or false if ghost class available
+ * @param {sring} ghostClass class for ghost 
+ * @param {string} ghostContent text content to be included inside of the ghost div
  * @returns {void}
  */
 
@@ -74,7 +70,7 @@ function touchDrag(dropTargetClasses, dragTargetClasses, draggingClass, dropClas
     }
     
     /**
-     * @memberOf class: touchDrag
+     * @memberOf function: touchDrag
      * 
      * @function buildGhost
      * 

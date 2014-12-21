@@ -1,20 +1,34 @@
-/*
- * > dropTargetClasses :
- * comma deliminated list of classes for drop areas
+/**
+ * @fileOverview Sortable Module responsible for all sorting related 
+ * actions for both desktop and mobile
+ *  - drag and drop
+ *  - touch events enabled
+ *  
+ */
+
+/**
+ * @function touchDrag
  * 
- * > dropTargetClasses :
- * comma deliminated list of classes to add onto this particular ghost element
- * 
+ * @param {string|object} dropTargetClasses comma deliminated list of classes for drop areas. 
+ * if an object it can include any or all of the param names as key value pairs
+ * @param {string} dragTargetClasses comma deliminated list of classes to add onto this particular ghost element
+ * @param {type} draggingClass class to be dragged
+ * @param {type} dropClass class to be dropped
+ * @param {boolean} noAutoDrop boolean value true or flase if auto drop available
+ * @param {boolean} noGhost boolean value true or false if ghost class available
+ * @param {sring} ghostClass class for ghost 
+ * @param {string} ghostContent text content to be included inside of the ghost div
+ * @returns {void}
  */
 
 function touchDrag(dropTargetClasses, dragTargetClasses, draggingClass, dropClass, noAutoDrop, noGhost, ghostClass, ghostContent){
-    if(typeof dropTargetClasses=='object'){
+    if(typeof dropTargetClasses ==='object'){
         dragTargetClasses   = dropTargetClasses.dragTargetClasses;
         draggingClass       = dropTargetClasses.draggingClass;
         dropClass           = dropTargetClasses.dropClass;
         noAutoDrop          = dropTargetClasses.noAutoDrop;
         noGhost             = dropTargetClasses.noGhost;
-        ghostClass          = dropTargetClasses.ghostClasses;
+        ghostClass          = dropTargetClasses.ghostClass;
         ghostContent        = dropTargetClasses.ghostContent;
         dropTargetClasses   = dropTargetClasses.dropTargetClasses;
     }
@@ -55,8 +69,16 @@ function touchDrag(dropTargetClasses, dragTargetClasses, draggingClass, dropClas
         }
     }
     
-    
-    function buildGhost(ghostClasses,ghostContent){
+    /**
+     * @memberOf function: touchDrag
+     * 
+     * @function buildGhost
+     * 
+     * @param {string} ghostClass
+     * @param {string} ghostContent
+     * @returns {void}
+     */
+    function buildGhost(ghostClass,ghostContent){
         ghost=document.createElement('div');
         ghost.style.position='absolute';
         ghost.style.zIndex=1e4;
@@ -122,7 +144,7 @@ function touchDrag(dropTargetClasses, dragTargetClasses, draggingClass, dropClas
     }
 
     function moveElement(element,insertBefore){
-        if(!dragTarget || element==dragTarget)
+        if(!dragTarget || element === dragTarget)
             return;
         
         if(!insertBefore){  
@@ -186,7 +208,7 @@ function touchDrag(dropTargetClasses, dragTargetClasses, draggingClass, dropClas
         var location={
             x:e.clientX,
             y:e.clientY
-        }
+        };
 
         if(!location.x){
             location.x=e.touches.item(0).clientX;

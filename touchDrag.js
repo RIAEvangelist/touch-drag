@@ -59,6 +59,11 @@ function touchDrag(dropTargetClasses, dragTargetClasses, draggingClass, dropClas
             startDrag
         );
 
+	dropTargets[i].addEventListener(
+	    'dragstart',
+	    startDrag
+	);
+
         dropTargets[i].addEventListener(
             'touchstart',
             startDrag
